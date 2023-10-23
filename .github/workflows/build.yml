@@ -1,0 +1,23 @@
+name: Build with Buck
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04 # Not latest, because python3.6 is not available on latest
+                          # https://github.com/actions/setup-python/issues/544
+    steps:
+    - uses: actions/checkout@v2
+    - name: Prepare artifact store
+      run: mkdir -p ./buck-out/gen
+    - name: Build ubuntu18to20
+      id: build
+      uses: SandakovMM/build-with-buck@v2
+      with:
+        command: build
+        target: :ubuntu18to20
+    - name: Store result
+      uses: actions/upload-artifact@v3
+      with:
+        name: ubuntu18to20
+        path: ./buck-out/gen/ubuntu18to20
