@@ -25,6 +25,7 @@ class InstallUbuntuUpdateManager(action.ActiveAction):
 class SetupUbuntu20Repositories(action.ActiveAction):
     def __init__(self):
         self.name = "setting up ubuntu 20 repositories"
+        self.plesk_sourcelist_path = "/etc/apt/sources.list.d/plesk.list"
 
     def _prepare_action(self):
         files.replace_string("/etc/apt/sources.list", "bionic", "focal")
@@ -34,12 +35,16 @@ class SetupUbuntu20Repositories(action.ActiveAction):
                 if file.endswith(".list"):
                     files.replace_string(os.path.join(root, file), "bionic", "focal")
 
+        files.backup_file(self.plesk_sourcelist_path)
+        files.replace_string(self.plesk_sourcelist_path, "extras", "all")
+
         packages.update_package_list()
 
     def _post_action(self):
-        pass
+        files.restore_file_from_backup(self.plesk_sourcelist_path)
 
     def _revert_action(self):
+        files.restore_file_from_backup(self.plesk_sourcelist_path)
         files.replace_string("/etc/apt/sources.list", "focal", "bionic")
 
         for root, _, file in os.walk("/etc/apt/sources.list.d/"):
