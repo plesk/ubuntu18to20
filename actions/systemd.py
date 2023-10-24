@@ -7,7 +7,7 @@ from common import action, systemd
 class AddUpgradeSystemdService(action.ActiveAction):
 
     def __init__(self, script_path, options):
-        self.name = "adding centos2alma resume service"
+        self.name = "adding ubuntu18to20 resume service"
 
         self.script_path = script_path
         # ToDo. It's pretty simple to forget to add argument here, so maybe we should find another way
@@ -16,7 +16,7 @@ class AddUpgradeSystemdService(action.ActiveAction):
             (" --no-reboot", options.no_reboot),
         ]
 
-        self.service_name = 'plesk-centos2alma.service'
+        self.service_name = 'plesk-ubuntu18to20.service'
         self.service_file_path = os.path.join('/etc/systemd/system', self.service_name)
         self.service_content = '''
 [Unit]

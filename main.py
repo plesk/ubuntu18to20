@@ -299,7 +299,7 @@ def main():
                     help="Start the conversion stage. This calls the Leapp utility to convert the system "
                          "and reboot into the temporary OS distribution.")
     opts.add_option("-r", "--revert", action="store_const", dest="stage", const=Stages.revert,
-                    help="Revert all changes made by the centos2alma. This option can only take effect "
+                    help="Revert all changes made by the ubuntu18to20 tool. This option can only take effect "
                          "if the server has not yet been rebooted into the temporary OS distribution.")
     opts.add_option("--finish", action="store_const", dest="stage", const=Stages.finish,
                     help="Start the finalization stage. This returns Plesk to normal operation. "
@@ -315,7 +315,7 @@ def main():
     opts.add_option("-s", "--stage", action="callback", callback=convert_string_to_stage, type="string",
                     help="Start one of the conversion process' stages. Allowed values: 'start', 'revert', and 'finish'.")
     opts.add_option("-v", "--version", action="store_true", dest="version", default=False,
-                    help="Show the version of the centos2alma utility.")
+                    help="Show the version of the ubuntu18to20 utility.")
     opts.add_option("-f", "--prepare-feedback", action="store_true", dest="prepare_feedback", default=False,
                     help="Prepare feedback archive that should be sent to the developers for further failure investigation.")
     opts.add_option("--verbose", action="store_true", dest="verbose", default=False, help="Write verbose logs")
