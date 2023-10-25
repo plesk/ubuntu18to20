@@ -63,7 +63,7 @@ def prepare_feedback() -> None:
     ubuntu_feedback = feedback.Feedback("ubuntu18to20", get_version() + "-" + get_revision(),
                                         [
                                             DEFAULT_LOG_FILE,
-                                            actions.ActiveFlow.PATH_TO_ACTIONS_DATA,
+                                            action.ActiveFlow.PATH_TO_ACTIONS_DATA,
                                         ],
                                         [
                                             get_installed_packages_list,
