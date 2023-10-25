@@ -4,7 +4,17 @@ import subprocess
 from common import action, dist, dpkg, files, log, packages, systemd
 
 
-MARIADB_VERSION_ON_ALMA = "10.3.35"
+MARIADB_VERSION_ON_UBUNTU_20 = "10.3.38"
+
+
+def _is_version_larger(left: str, right: str) -> bool:
+    for pleft, pright in zip(left.split("."), right.split(".")):
+        if int(pleft) > int(pright):
+            return True
+        elif int(pright) > int(pleft):
+            return False
+
+    return False
 
 
 def _get_mariadb_utilname() -> str:
@@ -23,6 +33,13 @@ def _is_mariadb_installed() -> bool:
         return True
 
     return "MariaDB" in subprocess.check_output([utility, "--version"], universal_newlines=True)
+
+
+def _get_mariadb_version() -> str:
+    utility = _get_mariadb_utilname()
+    out = subprocess.check_output([utility, "--version"], universal_newlines=True)
+    log.debug("Detected mariadb version is: {version}".format(version=out.split("Distrib ")[1].split(",")[0].split("-")[0]))
+    return out.split("Distrib ")[1].split(",")[0].split("-")[0]
 
 
 def _is_mysql_installed() -> bool:
@@ -91,20 +108,37 @@ class DisableMariadbInnodbFastShutdown(action.ActiveAction):
         return 15
 
 
-class InstallUbuntu20DatabaseVersion(action.ActiveAction):
+class InstallUbuntu20Mariadb(action.ActiveAction):
     def __init__(self):
-        self.name = "installing mariadb/mysql from ubuntu 20 official repository"
+        self.name = "installing mariadb from ubuntu 20 official repository"
 
     def _is_required(self) -> bool:
-        return _is_mariadb_installed() or _is_mysql_installed()
+        return _is_mariadb_installed() and _is_version_larger(MARIADB_VERSION_ON_UBUNTU_20, _get_mariadb_version())
 
     def _prepare_action(self):
         dpkg.depconfig_parameter_set("libraries/restart-without-asking", "true")
+        packages.install_packages(["mariadb-server-10.3"], force_package_config=True)
 
-        if _is_mariadb_installed():
-            packages.install_packages(["mariadb-server-10.3"], force_package_config=True)
-        elif _is_mysql_installed():
-            packages.install_packages(["mysql-server-5.7"], force_package_config=True)
+    def _post_action(self):
+        dpkg.depconfig_parameter_set("libraries/restart-without-asking", "false")
+
+    def _revert_action(self):
+        dpkg.depconfig_parameter_set("libraries/restart-without-asking", "false")
+
+    def estimate_prepare_time(self):
+        return 60
+
+
+class InstallUbuntu20Mysql(action.ActiveAction):
+    def __init__(self):
+        self.name = "installing mysql from ubuntu 20 official repository"
+
+    def _is_required(self) -> bool:
+        return _is_mysql_installed()
+
+    def _prepare_action(self):
+        dpkg.depconfig_parameter_set("libraries/restart-without-asking", "true")
+        packages.install_packages(["mysql-server-5.7"], force_package_config=True)
 
     def _post_action(self):
         dpkg.depconfig_parameter_set("libraries/restart-without-asking", "false")
