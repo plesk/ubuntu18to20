@@ -1,53 +1,10 @@
 # Copyright 1999 - 2023. Plesk International GmbH. All rights reserved.
 import subprocess
 
-from common import action, dist, dpkg, files, log, packages, systemd
+from common import action, dpkg, files, mariadb, packages, systemd
 
 
-MARIADB_VERSION_ON_UBUNTU_20 = "10.3.38"
-
-
-def _is_version_larger(left: str, right: str) -> bool:
-    for pleft, pright in zip(left.split("."), right.split(".")):
-        if int(pleft) > int(pright):
-            return True
-        elif int(pright) > int(pleft):
-            return False
-
-    return False
-
-
-def _get_mariadb_utilname() -> str:
-    for utility in ("mariadb", "mysql"):
-        if subprocess.run(["which", utility], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
-            return utility
-
-    return None
-
-
-def _is_mariadb_installed() -> bool:
-    utility = _get_mariadb_utilname()
-    if utility is None:
-        return False
-    elif utility == "mariadb":
-        return True
-
-    return "MariaDB" in subprocess.check_output([utility, "--version"], universal_newlines=True)
-
-
-def _get_mariadb_version() -> str:
-    utility = _get_mariadb_utilname()
-    out = subprocess.check_output([utility, "--version"], universal_newlines=True)
-    log.debug("Detected mariadb version is: {version}".format(version=out.split("Distrib ")[1].split(",")[0].split("-")[0]))
-    return out.split("Distrib ")[1].split(",")[0].split("-")[0]
-
-
-def _is_mysql_installed() -> bool:
-    utility = _get_mariadb_utilname()
-    if utility is None or utility == "mariadb":
-        return False
-
-    return "MariaDB" not in subprocess.check_output([utility, "--version"], universal_newlines=True)
+MARIADB_VERSION_ON_UBUNTU_20 = mariadb.MariaDBVersion("10.3.38")
 
 
 class AddMysqlConnector(action.ActiveAction):
@@ -55,7 +12,7 @@ class AddMysqlConnector(action.ActiveAction):
         self.name = "install mysql connector"
 
     def _is_required(self) -> bool:
-        return _is_mysql_installed()
+        return mariadb.is_mysql_installed()
 
     def _prepare_action(self) -> None:
         pass
@@ -68,12 +25,7 @@ class AddMysqlConnector(action.ActiveAction):
 
 
 def get_db_server_config_file():
-    if dist._is_rhel_based(dist.get_distro()):
-        return "/etc/my.cnf.d/server.cnf"
-
-    if _is_mysql_installed():
-        return "/etc/mysql/my.cnf"
-    return "/etc/mysql/mariadb.conf.d/50-server.cnf"
+    return mariadb.get_mysql_config_file_path() if mariadb.is_mysql_installed() else mariadb.get_mariadb_config_file_path()
 
 
 class DisableMariadbInnodbFastShutdown(action.ActiveAction):
@@ -81,7 +33,7 @@ class DisableMariadbInnodbFastShutdown(action.ActiveAction):
         self.name = "disabling mariadb innodb fast shutdown"
 
     def _is_required(self) -> bool:
-        return _is_mariadb_installed() or _is_mysql_installed()
+        return mariadb.is_mariadb_installed() or mariadb.is_mysql_installed()
 
     def _prepare_action(self):
         target_file = get_db_server_config_file()
@@ -113,7 +65,7 @@ class InstallUbuntu20Mariadb(action.ActiveAction):
         self.name = "installing mariadb from ubuntu 20 official repository"
 
     def _is_required(self) -> bool:
-        return _is_mariadb_installed() and _is_version_larger(MARIADB_VERSION_ON_UBUNTU_20, _get_mariadb_version())
+        return mariadb.is_mariadb_installed() and MARIADB_VERSION_ON_UBUNTU_20 > mariadb.get_installed_mariadb_version()
 
     def _prepare_action(self):
         dpkg.depconfig_parameter_set("libraries/restart-without-asking", "true")
@@ -134,7 +86,7 @@ class InstallUbuntu20Mysql(action.ActiveAction):
         self.name = "installing mysql from ubuntu 20 official repository"
 
     def _is_required(self) -> bool:
-        return _is_mysql_installed()
+        return mariadb.is_mysql_installed()
 
     def _prepare_action(self):
         dpkg.depconfig_parameter_set("libraries/restart-without-asking", "true")
