@@ -81,22 +81,42 @@ class InstallUbuntu20Mariadb(action.ActiveAction):
         return 60
 
 
-class InstallUbuntu20Mysql(action.ActiveAction):
+class DisableUnsupportedMysqlModes(action.ActiveAction):
     def __init__(self):
-        self.name = "installing mysql from ubuntu 20 official repository"
+        self.name = "disabling mysql modes unsupported mysql 8.0"
+        self.deprecated_modes = [
+            "ONLY_FULL_GROUP_BY",
+            "STRICT_TRANS_TABLES",
+            "NO_ZERO_IN_DATE",
+            "NO_ZERO_DATE",
+            "ERROR_FOR_DIVISION_BY_ZERO",
+            "NO_AUTO_CREATE_USER",
+            "NO_ENGINE_SUBSTITUTION",
+        ]
 
     def _is_required(self) -> bool:
         return mariadb.is_mysql_installed()
 
     def _prepare_action(self):
-        dpkg.depconfig_parameter_set("libraries/restart-without-asking", "true")
-        packages.install_packages(["mysql-server-5.7"], force_package_config=True)
+        for config_file in files.find_files_case_insensitive("/etc/mysql", "*.cnf", True):
+            files.backup_file(config_file)
+            for mode in self.deprecated_modes:
+                files.replace_string(config_file, mode + ",", " ")
+                files.replace_string(config_file, mode, " ")
 
     def _post_action(self):
-        dpkg.depconfig_parameter_set("libraries/restart-without-asking", "false")
+        for config_file in files.find_files_case_insensitive("/etc/mysql", "*.cnf", True):
+            files.remove_backup(config_file)
 
     def _revert_action(self):
-        dpkg.depconfig_parameter_set("libraries/restart-without-asking", "false")
+        for config_file in files.find_files_case_insensitive("/etc/mysql", "*.cnf", True):
+            files.restore_file_from_backup(config_file)
 
     def estimate_prepare_time(self):
-        return 60
+        return 10
+
+    def estimate_post_time(self):
+        return 10
+
+    def estimate_revert_time(self):
+        return 10

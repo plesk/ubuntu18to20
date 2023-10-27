@@ -143,6 +143,7 @@ def construct_actions(options: typing.Any, stage_flag: Stages) -> typing.Dict[in
             actions.DisablePleskSshBanner(),
             actions.RepairPleskInstallation(),
             actions.DisableMariadbInnodbFastShutdown(),
+            actions.DisableUnsupportedMysqlModes(),
             actions.InstallUbuntuUpdateManager(),
             actions.CleanApparmorCacheConfig(),
             actions.RestoreCurrentSpamassasinConfiguration(),
@@ -155,7 +156,6 @@ def construct_actions(options: typing.Any, stage_flag: Stages) -> typing.Dict[in
         2: [
             actions.InstallNextKernelVersion(),
             actions.InstallUbuntu20Mariadb(),
-            actions.InstallUbuntu20Mysql(),
             actions.InstallUdev(),
             actions.ReinstallSystemd(),
             actions.RemoveLXD(),
