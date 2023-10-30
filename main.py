@@ -276,7 +276,7 @@ def do_convert(options: typing.Any) -> None:
 HELP_MESSAGE = f"""ubuntu18to20 [options]
 
 
-Use this script to distupgrade a Ubuntu 18 server with Plesk to Ubuntu 20. The process consists of two stages:
+Use this script to distupgrade an Ubuntu 18 server with Plesk to Ubuntu 20. The process consists of two stages:
 
 
 - Preparation (about 5 minutes) - The OS is prepared for the conversion.

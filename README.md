@@ -1,15 +1,15 @@
-# The tool to distupgrade a Ubuntu 18 server with Plesk to to Ubuntu 20
+# The tool to distupgrade an Ubuntu 18 server with Plesk to to Ubuntu 20
 
 Ubuntu 18 to Ubuntu 20 distupgrade tool
 
 ## Introduction
-This script is the official tool for distupgrade a Ubuntu 18 server with Plesk to Ubuntu 20. The script is based on the official ubuntu distupgrade tool. The script includes additional repository and configuration support provided by Plesk.
+This script is the official tool for distupgrade an Ubuntu 18 server with Plesk to Ubuntu 20. The script is based on the official ubuntu distupgrade tool. The script includes additional repository and configuration support provided by Plesk.
 
 ## Preparation
 To avoid downtime and data loss, make sure you have read and understood the following information before using the script:
 1. **Upgrade Plesk to the last version.**
 2. **Create a full server backup.** Before the upgrade, make a full server backup (which includes a full backup of all the databases).
-3. Notify the customers about upcoming downtime. Expected downtime is between 25-35 minutes.
+3. Notify the customers about upcoming downtime. Expected downtime is between 25 and 35 minutes.
 4. **Remote management module must be installed on the server**.
 5. We strongly recommend that you **create a snapshot you can use as a recovery point** in case the conversion process fails.
 6. Read the [Known issues](#known-issues) section below for the list of known issues.
@@ -102,9 +102,9 @@ Note:
 To check the status of the conversion process, use the '--status' flag. You can see the current stage of the conversion process, the elapsed time, and the estimated time until finish.
 ```shell
 > ./ubuntu18to20 --status
-``` 
+```
 
-To monitor the progress of the conversion process in real time, The conversion process can be monitored in real time using the '--monitor' flag.
+To monitor the progress of the conversion process in real time, use the '--monitor' flag.
 ```shell
 > ./ubuntu18to20 --monitor
 ( stage 3 / action re-installing plesk components  ) 02:26 / 06:18
