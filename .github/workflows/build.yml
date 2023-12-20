@@ -4,18 +4,23 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-20.04 # Not latest, because python3.6 is not available on latest
-                          # https://github.com/actions/setup-python/issues/544
+    # Not latest, because python3.6 is not available on latest
+    # (https://github.com/actions/setup-python/issues/544),
+    # and SandakovMM/build-with-buck@v2 action requires it
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout repository and submodules
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         submodules: recursive
+        # We use tags to determine version, so fetch them
+        fetch-depth: 0
+        fetch-tags: true
     - name: Prepare artifact store
       run: mkdir -p ./buck-out/gen
     - name: Build ubuntu18to20
       id: build
-      uses: SandakovMM/build-with-buck@v2
+      uses: SandakovMM/build-with-buck@v3
       with:
         command: build
         target: :ubuntu18to20

@@ -1,0 +1,28 @@
+# Copyright 1999-2023. Plesk International GmbH. All rights reserved.
+# vim:ft=python:
+
+include_defs('//product.defs.py')
+
+
+genrule(
+    name = 'config',
+    srcs = ['config.py'],
+    out = 'config.py',
+    bash = '''\
+        UB18TO20_VERSION='{version}'
+        UB18TO20_REVISION='{revision}'
+        sed -e "s/@@UB18TO20_VERSION@@/$UB18TO20_VERSION/g; s/@@UB18TO20_REVISION@@/$UB18TO20_REVISION/g" "$SRCS" >"$OUT"
+    '''.format(
+        version=get_ub18to20_version(),
+        revision=get_ub18to20_revision(),
+    ),
+)
+
+python_library(
+    name = 'lib',
+    srcs = glob(
+        ['**/*.py'],
+        exclude = ['config.py'],
+    ) + [':config'],
+    visibility = ['PUBLIC'],
+)

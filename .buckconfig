@@ -1,6 +1,11 @@
 # Documentation: https://buckbuild.com/concept/buckconfig.html
 
-[python]
-    interpreter = python2.7
+[parser]
+    python_interpreter = /usr/bin/python2
+
 [python#py3]
-    interpreter = /usr/bin/python3.6
+    interpreter = /usr/bin/python3
+
+[repositories]
+    ubuntu18to20 = .
+    dist-upgrader = ./dist-upgrader
