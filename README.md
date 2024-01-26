@@ -68,7 +68,6 @@ And monitor its status with the '--status' or '--monitor' flags:
 The conversion process requires 3 reboots. It will be resumed automatically after reboot by the `plesk-dist-upgrader` systemd service. In addition to `--status` and `--monitor`, you can check the status of the conversion process by running the following command:
 ```shell
 > systemctl status plesk-dist-upgrader
-... live monitor session ...
 ```
 
 Running dist-upgrader without any arguments initiates the conversion process. The utility performs preliminary checks, and if any issues are detected, it provides descriptions of the problems along with guidance on how to resolve them.
