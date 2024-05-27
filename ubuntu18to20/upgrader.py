@@ -86,6 +86,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.AddInProgressSshLoginMessage(new_os),
                 actions.DisablePleskSshBanner(),
                 actions.RepairPleskInstallation(),  # Executed at the finish phase only
+                actions.UninstallTuxcareEls(),
                 actions.DisableMariadbInnodbFastShutdown(),
                 actions.DisableUnsupportedMysqlModes(),
                 actions.InstallUbuntuUpdateManager(),
