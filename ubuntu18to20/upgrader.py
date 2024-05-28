@@ -10,6 +10,7 @@ from pleskdistup.phase import Phase
 from pleskdistup.upgrader import dist, DistUpgrader, DistUpgraderFactory, PathType
 
 import ubuntu18to20.config
+import ubuntu18to20.actions
 
 
 class Ubuntu18to20Upgrader(DistUpgrader):
@@ -102,6 +103,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
             ],
             "Dist-upgrade": [
                 actions.DoDistupgrade(),
+                ubuntu18to20.actions.RemoveUnusedPackages(),
             ],
             "Finishing actions": [
                 actions.Reboot(prepare_next_phase=Phase.FINISH, name="reboot and perform finishing actions"),
