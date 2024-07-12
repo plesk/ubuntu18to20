@@ -118,7 +118,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
         return [
             actions.AssertMinPleskVersion("18.0.43"),
             actions.AssertPleskInstallerNotInProgress(),
-            actions.AssertMinPhpVersion("7.1"),
+            actions.AssertMinPhpVersion("7.0"),
             actions.AssertPleskWatchdogNotInstalled(),
             actions.AssertDpkgNotLocked(),
             actions.AssertNotInContainer(),
