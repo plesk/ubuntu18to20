@@ -58,6 +58,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
             feedback.collect_installed_packages_dpkg,
             feedback.collect_apt_policy,
             feedback.collect_plesk_version,
+            feedback.collect_kernel_modules,
         ]
         return feed
 
