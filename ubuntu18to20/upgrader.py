@@ -94,7 +94,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                     '\g<1>://\g<2>/\g<3>20.04\g<4>',
                 ),
                 actions.ReplaceAptReposRegexp(
-                    r'(http|https)://([^/]+)/(.*\b)18\(\b.*)',
+                    r'(http|https)://([^/]+)/(.*\b)18(\b.*)',
                     '\g<1>://\g<2>/\g<3>20\g<4>',
                 ),
             ],
