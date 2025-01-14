@@ -5,7 +5,7 @@ import os
 import typing
 
 from pleskdistup import actions
-from pleskdistup.common import action, feedback
+from pleskdistup.common import action, feedback, strings
 from pleskdistup.phase import Phase
 from pleskdistup.upgrader import dist, DistUpgrader, DistUpgraderFactory, PathType
 
@@ -69,6 +69,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
         phase: Phase
     ) -> typing.Dict[str, typing.List[action.ActiveAction]]:
         new_os = str(self._distro_to)
+
         return {
             "Prepare": [
                 actions.HandleConversionStatus(options.status_flag_path, options.completion_flag_path),
@@ -88,15 +89,15 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.RemoveMailComponents(options.state_dir),
             ],
             "Switch repositories": [
-                actions.SetupUbuntu20Repositories(),
-                actions.ReplaceAptReposRegexp(
-                    r'(http|https)://([^/]+)/(.*\b)18\.04(\b.*)',
-                    '\g<1>://\g<2>/\g<3>20.04\g<4>',
+                # UpdateLegacyPhpRepositories specific for distupgrades where
+                #  we support following PHP versions: PHP 7.1, 7.2, 7.3.
+                actions.UpdateLegacyPhpRepositories(self._distro_from, self._distro_to),
+                actions.AdoptAptRepositoriesUbuntu([
+                    strings.create_replace_string_function('bionic', 'focal'),
+                    strings.create_replace_regexp_function(r'(http|https)://([^/]+)/(.*\b)18\.04(\b.*)', '\g<1>://\g<2>/\g<3>20.04\g<4>')
+                    ], name="modify apt repositories to new OS"
                 ),
-                actions.ReplaceAptReposRegexp(
-                    r'(http|https)://([^/]+)/(.*\b)18(\b.*)',
-                    '\g<1>://\g<2>/\g<3>20\g<4>',
-                ),
+                actions.SwitchPleskRepositories(to_os_version="20.04"),
             ],
             "Pre-install packages": [
                 actions.InstallNextKernelVersion(),
