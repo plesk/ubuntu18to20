@@ -7,7 +7,7 @@ jobs:
     # Not latest, because python3.6 is not available on latest
     # (https://github.com/actions/setup-python/issues/544),
     # and SandakovMM/build-with-buck@v2 action requires it
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
     - name: Checkout repository and submodules
       uses: actions/checkout@v4
