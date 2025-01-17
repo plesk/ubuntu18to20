@@ -99,6 +99,11 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 ),
                 actions.SwitchPleskRepositories(to_os_version="20.04"),
             ],
+            "Re-install python3 from new repository": [
+                # Some packages lean on particular python3 versions (e.g. cloud-init),
+                # so we need to make sure python3 updated before upgrading these packages.
+                actions.InstallPython3(),
+            ],
             "Pre-install packages": [
                 actions.InstallNextKernelVersion(),
                 actions.InstallUbuntu20Mariadb(),
