@@ -9,7 +9,7 @@ include_defs('//buck.defs.py')
 # included file due to get_base_path() call inside (so, you can't just
 # do REVISION = get_git_revision_description())
 def get_ub18to20_revision():
-    return get_git_revision_description()
+    return get_git_revision_description(dirty=False)
 
 
 def get_ub18to20_version():
