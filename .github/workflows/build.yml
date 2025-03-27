@@ -28,7 +28,7 @@ jobs:
         command: build
         target: :ubuntu18to20
     - name: Store result
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ubuntu18to20
         path: ./buck-out/gen/ubuntu18to20
