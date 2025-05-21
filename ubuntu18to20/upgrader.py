@@ -139,6 +139,15 @@ class Ubuntu18to20Upgrader(DistUpgrader):
             actions.AssertPleskWatchdogNotInstalled(),
             actions.AssertDpkgNotLocked(),
             actions.AssertNotInContainer(),
+            actions.AssertRepositorySubstitutionAvailable(
+                target_repository_file="/etc/apt/sources.list.d/mariadb.list",
+                substitution_rule=strings.create_replace_string_function("bionic", "focal"),
+                name="asserting mariadb repository substitution available",
+                description_addition="""\tCurrent MariaDB repository is not available on the target platform.
+\tTo proceed with dist-upgrade update MariaDB to version 10.6 or higher using the official repository,
+\tor configure a custom repository that supports Ubuntu 20.04.
+""",
+            )
         ]
 
     def parse_args(self, args: typing.Sequence[str]) -> None:
