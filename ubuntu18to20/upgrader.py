@@ -20,6 +20,8 @@ class Ubuntu18to20Upgrader(DistUpgrader):
     def __init__(self):
         super().__init__()
 
+        self.downgrade_allowed = False
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(From {self._distro_from}, To {self._distro_to})"
 
@@ -116,7 +118,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.Reboot(),
             ],
             "Upgrade packages": [
-                actions.UpgradePackagesFromNewRepositories(),
+                actions.UpgradePackagesFromNewRepositories(allow_downgrade=self.downgrade_allowed),
             ],
             "Dist-upgrade": [
                 actions.DoDistupgrade(),
@@ -175,7 +177,11 @@ and attach the feedback archive generated with --prepare-feedback or at least th
             "-h", "--help", action="help", default=argparse.SUPPRESS,
             help=argparse.SUPPRESS,
         )
-        parser.parse_args(args)
+        parser.add_argument("--allow-downgrade", action="store_true", dest="downgrade_allowed", default=False,
+                            help="Allow packages downgrade. In some cases, apt may downgrade packages to the previous version during the dist-upgrade.")
+        options = parser.parse_args(args)
+
+        self.downgrade_allowed = options.downgrade_allowed
 
 
 class Ubuntu18to20Factory(DistUpgraderFactory):
