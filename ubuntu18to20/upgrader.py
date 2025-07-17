@@ -80,6 +80,8 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.DisablePleskSshBanner(),
                 actions.RepairPleskInstallation(),  # Executed at the finish phase only
                 actions.UninstallTuxcareEls(),
+                actions.PostInstallTuxcareEls(),
+                actions.PostRetrieveLicenseKeys(),
                 actions.DisableMariadbInnodbFastShutdown(),
                 actions.DisableUnsupportedMysqlModes(),
                 actions.InstallUbuntuUpdateManager(),
