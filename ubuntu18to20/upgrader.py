@@ -91,6 +91,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.AddUpgradeSystemdService(os.path.abspath(upgrader_bin_path), options),
                 actions.MoveOldBindConfigToNamed(),
                 actions.RemoveMailComponents(options.state_dir),
+                actions.TemporaryRemovePackage("python-gi"),
             ],
             "Switch repositories": [
                 # UpdateLegacyPhpRepositories specific for distupgrades where
