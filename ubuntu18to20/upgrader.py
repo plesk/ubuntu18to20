@@ -92,6 +92,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.MoveOldBindConfigToNamed(),
                 actions.RemoveMailComponents(options.state_dir),
                 actions.TemporaryRemovePackage("python-gi"),
+                actions.RemoveLXD(),
             ],
             "Switch repositories": [
                 # UpdateLegacyPhpRepositories specific for distupgrades where
@@ -114,7 +115,6 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.InstallUbuntu20Mariadb(),
                 actions.InstallUdev(),
                 actions.ReinstallSystemd(),
-                actions.RemoveLXD(),
                 actions.UpgradeGrub(),
             ],
             "Reboot": [
