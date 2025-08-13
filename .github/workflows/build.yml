@@ -23,7 +23,7 @@ jobs:
       run: mkdir -p ./buck-out/gen
     - name: Build ubuntu18to20
       id: build
-      uses: SandakovMM/build-with-buck@v3
+      uses: SandakovMM/build-with-buck@v4
       with:
         command: build
         target: :ubuntu18to20
