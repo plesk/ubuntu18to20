@@ -100,7 +100,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.UpdateLegacyPhpRepositories(self._distro_from, self._distro_to),
                 actions.AdoptAptRepositoriesUbuntu([
                     strings.create_replace_string_function('bionic', 'focal'),
-                    strings.create_replace_regexp_function(r'(http|https)://([^/]+)/(.*\b)18\.04(\b.*)', '\g<1>://\g<2>/\g<3>20.04\g<4>')
+                    strings.create_replace_regexp_function(r'(http|https)://([^/]+)/(.*\b)(ubuntu|ubuntu-testing)/18\.04(\b.*)', '\g<1>://\g<2>/\g<3>\g<4>/20.04\g<5>')
                     ], name="modify apt repositories to new OS"
                 ),
                 actions.SwitchPleskRepositories(to_os_version="20.04"),
