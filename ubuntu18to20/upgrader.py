@@ -78,6 +78,7 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.AddFinishSshLoginMessage(new_os),  # Executed at the finish phase only
                 actions.AddInProgressSshLoginMessage(new_os),
                 actions.DisablePleskSshBanner(),
+                actions.AddUpgradeSystemdService(os.path.abspath(upgrader_bin_path), options),
                 actions.RepairPleskInstallation(),  # Executed at the finish phase only
                 actions.UninstallTuxcareEls(),
                 actions.PostInstallTuxcareEls(),
@@ -88,7 +89,6 @@ class Ubuntu18to20Upgrader(DistUpgrader):
                 actions.CleanApparmorCacheConfig(),
                 actions.RestoreCurrentSpamassasinConfiguration(options.state_dir),
                 actions.DisableGrafana(),
-                actions.AddUpgradeSystemdService(os.path.abspath(upgrader_bin_path), options),
                 actions.MoveOldBindConfigToNamed(),
                 actions.RemoveMailComponents(options.state_dir),
                 actions.TemporaryRemovePackage("python-gi"),
