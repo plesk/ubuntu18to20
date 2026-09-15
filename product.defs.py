@@ -14,4 +14,4 @@ def get_ub18to20_revision():
 
 def get_ub18to20_version():
     rev = get_ub18to20_revision()
-    return rev.lstrip('v').split('-', 1)[0] if '-' in rev else ''
+    return rev.lstrip('v').split('-', 1)[0] if rev.startswith('v') else ''
